@@ -62,9 +62,35 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		// NUL character so, end of file
 		tok = newToken(token.EOF, "")
+	case '"':
+		// start of multi-character string
+		tok = l.parseString()
+	default:
+
 	}
 
 	// consume
 	l.advance()
 	return tok
+}
+
+func (l *Lexer) parseString() token.Token {
+	curr := l.peek()
+	if curr != '"' {
+		return newToken(token.Illegal, string(curr))
+	}
+	// go to the next character after the first encountered '"'
+	l.advance()
+	start := l.position
+	for l.position < len(l.input) {
+		if l.peek() == '"' {
+			break
+		}
+		l.advance()
+	}
+	val := string(l.input[start:l.position])
+	if l.peek() != '"' {
+		return newToken(token.Illegal, val)
+	}
+	return newToken(token.String, val)
 }

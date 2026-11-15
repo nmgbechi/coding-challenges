@@ -9,7 +9,8 @@ import (
 
 func main() {
 	input := "{ [ ,                                         ] }                  "
-
+	input = `{"name": "Bob", "age": 42, "ok": true}`
+	input = `"hi" "there" ""`
 	lex := lexer.New(input)
 
 	curr := lex.NextToken()
@@ -17,4 +18,5 @@ func main() {
 		fmt.Println(curr)
 		curr = lex.NextToken()
 	}
+
 }
